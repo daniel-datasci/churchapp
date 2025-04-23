@@ -4,6 +4,8 @@ import sqlite3
 import matplotlib.pyplot as plt
 from datetime import datetime, date
 
+today = datetime.now().date()
+
 # --- Database Setup ------------------------------------------------------------
 conn = sqlite3.connect("church.db", check_same_thread=False)
 c = conn.cursor()
@@ -149,8 +151,7 @@ elif menu == "Reports":
         conv  = st.number_input("New Converts", min_value=0, step=1)
         first = st.number_input("First Timers", min_value=0, step=1)
         date_ = st.date_input("Date of Meeting", value=today)
-        submitted = st.form_submit_button("ADD SERVICE REPORT")
-        if submitted:
+        if if st.form_submit_button("ADD SERVICE REPORT"):
             row = {
               "Meeting Day": md, "Total Attn.": total,
               "Male Attn.": male, "Female Attn.": female,
