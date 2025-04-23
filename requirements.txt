@@ -1,14 +1,6 @@
-python-dotenv
-ipykernel
 streamlit
 pandas
 numpy
-xgboost
-imblearn
 matplotlib
 seaborn
-optuna
-shap
-datetime
-date
 matplotlib.pyplot
