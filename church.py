@@ -89,7 +89,7 @@ elif page == 'Reports':
         dom = st.date_input("Date of Meeting")
         submitted = st.form_submit_button("Add Service Report")
         if submitted:
-            st.session_state.reports = st.session_state.reports.append({
+            new_row = pd.DataFrame([{
                 'Meeting Day': mday,
                 'Total Attn.': total,
                 'Male Attn.': male,
@@ -97,7 +97,8 @@ elif page == 'Reports':
                 'New Converts': converts,
                 'First Timers': first_timers,
                 'Date of Meeting': dom.strftime('%Y-%m-%d')
-            }, ignore_index=True)
+            }])
+            st.session_state.reports = pd.concat([st.session_state.reports, new_row], ignore_index=True)
             st.success("Report added.")
     # Display table
     st.subheader("Service Reports")
@@ -130,12 +131,13 @@ elif page == 'Branches':
         status = st.selectbox("Branch Status", ['Active','Inactive'])
         submitted = st.form_submit_button("Add New Branch")
         if submitted:
-            st.session_state.branches = st.session_state.branches.append({
-                'Branch Name': name,
-                'Branch Location': loc,
-                'Total Cell Venues': venues,
-                'Branch Status': status
-            }, ignore_index=True)
+            new_row = pd.DataFrame([{
+                "Branch Name": name,
+                "Branch Location": location,
+                "Total Cell Venues": cell_venues,
+                "Branch Status": status
+            }])
+            st.session_state.branches = pd.concat([st.session_state.branches, new_row], ignore_index=True)
             st.success("Branch added.")
     st.dataframe(st.session_state.branches)
 
@@ -157,14 +159,15 @@ elif page == 'Members':
         status = st.selectbox("Status", ['Adult','Child'])
         submitted = st.form_submit_button("Add New Member")
         if submitted:
-            st.session_state.members = st.session_state.members.append({
+            new_row = pd.DataFrame([{
                 'Member Name': name,
                 'Date of Birth': dob.strftime('%Y-%m-%d'),
                 'Email': email,
                 'Phone': phone,
                 'Gender': gender,
                 'Status': status
-            }, ignore_index=True)
+            }])
+            st.session_state.members = pd.concat([st.session_state.members, new_row], ignore_index=True)
             st.success("Member added.")
     st.dataframe(st.session_state.members)
 
@@ -186,13 +189,14 @@ elif page == 'Staff & Roles':
         role = st.selectbox("Role", ['PCF Pastor','Head of Departments','Cell Leader','Worker'])
         submitted = st.form_submit_button("Add New Staff")
         if submitted:
-            st.session_state.staff = st.session_state.staff.append({
+            new_row = pd.DataFrame([{
                 'Staff Name': name,
                 'Email': email,
                 'Phone': phone,
                 'PCF': pcf,
                 'Role': role
-            }, ignore_index=True)
+            }])
+            st.session_state.staff = pd.concat([st.session_state.staff, new_row], ignore_index=True)
             st.success("Staff added.")
     st.dataframe(st.session_state.staff)
 
