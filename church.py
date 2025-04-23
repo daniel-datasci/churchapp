@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 import matplotlib.pyplot as plt
 
 # Initialize session state for data storage
@@ -151,12 +151,17 @@ elif page == 'Members':
     col4.metric("Total Children", st.session_state.members['Status'].value_counts().get('Child', 0))
     with st.form("member_form", clear_on_submit=True):
         st.subheader("Add New Member")
-        name = st.text_input("Member Name")
-        dob = st.date_input("Date of Birth")
-        email = st.text_input("Email")
-        phone = st.text_input("Phone")
-        gender = st.selectbox("Gender", ['Male','Female'])
-        status = st.selectbox("Status", ['Adult','Child'])
+        name   = st.text_input("Member Name")
+        dob    = st.date_input(
+                     "Date of Birth",
+                     min_value=date(1950, 1, 1),
+                     max_value=date(2025, 12, 31),
+                     value=date(1990, 1, 1)  # you can set a sensible default
+                 )
+        email  = st.text_input("Email")
+        phone  = st.text_input("Phone")
+        gen    = st.selectbox("Gender", ["Male", "Female"])
+        status = st.selectbox("Status", ["Adult", "Child"])
         submitted = st.form_submit_button("Add New Member")
         if submitted:
             new_row = pd.DataFrame([{
