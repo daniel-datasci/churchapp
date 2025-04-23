@@ -70,10 +70,10 @@ def init_state():
             date_cols=["Date of Meeting"]
         )
     if "cell_reports" not in st.session_state:
-    st.session_state.cell_reports = load_df(
-        "cell_reports",
-        ["Branch Name", "PCF Pastor", "Cell Leader", "Total Attn.", "New Converts", "First Timers", "Sunday Service Attn", "Total Offering", "Date of Meeting"],
-        date_cols=["Date of Meeting"]
+        st.session_state.cell_reports = load_df(
+            "cell_reports",
+            ["Branch Name", "PCF Pastor", "Cell Leader", "Total Attn.", "New Converts", "First Timers", "Sunday Service Attn", "Total Offering", "Date of Meeting"],
+            date_cols=["Date of Meeting"]
         )
 
 init_state()
