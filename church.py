@@ -169,7 +169,7 @@ elif page == 'Members':
                 'Date of Birth': dob.strftime('%Y-%m-%d'),
                 'Email': email,
                 'Phone': phone,
-                'Gender': gender,
+                'Gender': gen,
                 'Status': status
             }])
             st.session_state.members = pd.concat([st.session_state.members, new_row], ignore_index=True)
