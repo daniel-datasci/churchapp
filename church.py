@@ -24,6 +24,8 @@ init_table("meeting_days",
     "MeetingDay TEXT")
 init_table("service_reports",
     "MeetingDay TEXT, TotalAttn INTEGER, MaleAttn INTEGER, FemaleAttn INTEGER, NewConverts INTEGER, FirstTimers INTEGER, DateOfMeeting TEXT")
+init_table("cell_reports", 
+    "BranchName TEXT, PCFPastor TEXT, CellLeader TEXT, TotalAttn INTEGER, NewConverts INTEGER, FirstTimers INTEGER, SundayServiceAttn INTEGER, TotalOffering REAL, DateOfMeeting TEXT")
 
 # --- Helper to load each table into a DataFrame --------------------------------
 def load_df(table, cols, date_cols=None):
@@ -67,6 +69,12 @@ def init_state():
             ["Meeting Day","Total Attn.","Male Attn.","Female Attn.","New Converts","First Timers","Date of Meeting"],
             date_cols=["Date of Meeting"]
         )
+    if "cell_reports" not in st.session_state:
+    st.session_state.cell_reports = load_df(
+        "cell_reports",
+        ["Branch Name", "PCF Pastor", "Cell Leader", "Total Attn.", "New Converts", "First Timers", "Sunday Service Attn", "Total Offering", "Date of Meeting"],
+        date_cols=["Date of Meeting"]
+        )
 
 init_state()
 
@@ -86,7 +94,7 @@ church_name = "Dominion City Ago"
 # --- Sidebar Navigation --------------------------------------------------------
 st.sidebar.title("Menu")
 menu = st.sidebar.radio("", [
-    'Dashboard','Service Reports','Meeting Days','Branches','Members','Staff & Roles','Tools & Resources','Communications Hub','Support'
+    'Dashboard','Service Reports','Cell Reports', 'Meeting Days','Branches','Members','Staff & Roles','Tools & Resources','Communications Hub','Support'
 ])
 
 #menu = st.sidebar.selectbox(
@@ -171,6 +179,78 @@ elif menu == "Service Reports":
             )
             st.success("Report added.")
     st.dataframe(st.session_state.service_reports)
+
+
+# --- Cell Reports ---------------------------------------------------------------
+elif menu == "Cell Reports":
+    st.header("Cell Reports")
+
+    # — Filter by Branch —
+    all_branches = list(st.session_state.branches["Branch Name"])
+    branch_filter = st.selectbox("Filter by Branch", ["All"] + all_branches)
+
+    # — Add Cell Report Form —
+    with st.form("add_cell_report", clear_on_submit=True):
+        branch      = st.selectbox("Branch Name", all_branches)
+        # dynamic PCF Pastor list
+        pcf_opts    = st.session_state.staff.loc[
+                          st.session_state.staff["Staff Role"] == "PCF Pastor",
+                          "Staff Name"
+                      ].tolist()
+        pcf_pastor  = st.selectbox("PCF Pastor", pcf_opts)
+
+        # dynamic Cell Leader list
+        leader_opts = st.session_state.staff.loc[
+                          st.session_state.staff["Staff Role"] == "Cell Leader",
+                          "Staff Name"
+                      ].tolist()
+        cell_leader = st.selectbox("Cell Leader", leader_opts)
+
+        total_attn       = st.number_input("Total Attendance", min_value=0, step=1)
+        new_converts     = st.number_input("New Converts", min_value=0, step=1)
+        first_timers     = st.number_input("First Timers", min_value=0, step=1)
+        sunday_attn      = st.number_input("Sunday Service Attn", min_value=0, step=1)
+        total_offering   = st.number_input("Total Offering", min_value=0.0, step=0.01, format="%.2f")
+        date_meeting     = st.date_input("Date of Meeting", value=today)
+
+        if st.form_submit_button("ADD CELL REPORT"):
+            # 1) insert into SQLite
+            db_insert(
+                "cell_reports",
+                [
+                  "BranchName","PCFPastor","CellLeader",
+                  "TotalAttn","NewConverts","FirstTimers",
+                  "SundayServiceAttn","TotalOffering","DateOfMeeting"
+                ],
+                [
+                  branch, pcf_pastor, cell_leader,
+                  total_attn, new_converts, first_timers,
+                  sunday_attn, total_offering, str(date_meeting)
+                ]
+            )
+            # 2) append to session_state
+            new_row = {
+              "Branch Name": branch,
+              "PCF Pastor": pcf_pastor,
+              "Cell Leader": cell_leader,
+              "Total Attn.": total_attn,
+              "New Converts": new_converts,
+              "First Timers": first_timers,
+              "Sunday Service Attn": sunday_attn,
+              "Total Offering": total_offering,
+              "Date of Meeting": date_meeting
+            }
+            st.session_state.cell_reports = pd.concat(
+                [st.session_state.cell_reports, pd.DataFrame([new_row])],
+                ignore_index=True
+            )
+            st.success("Cell report added.")
+
+    # — Display table, filtered if needed —
+    df = st.session_state.cell_reports.copy()
+    if branch_filter != "All":
+        df = df[df["Branch Name"] == branch_filter]
+    st.dataframe(df)
 
 # --- Meeting Days ---------------------------------------------------------------
 elif menu == "Meeting Days":
