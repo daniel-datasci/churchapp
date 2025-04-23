@@ -81,12 +81,12 @@ def db_insert(table, cols, values):
 
 # --- App Config ---------------------------------------------------------------
 st.set_page_config(page_title="Church Management", layout="wide")
-church_name = "My Church"
+church_name = "Dominion City Ago"
 
 # --- Sidebar Navigation --------------------------------------------------------
 st.sidebar.title("Menu")
 menu = st.sidebar.radio("", [
-    'Dashboard','Reports','Meeting Days','Branches','Members','Staff & Roles','Tools & Resources','Communications Hub','Support'
+    'Dashboard','Service Reports','Meeting Days','Branches','Members','Staff & Roles','Tools & Resources','Communications Hub','Support'
 ])
 
 #menu = st.sidebar.selectbox(
@@ -140,7 +140,7 @@ if menu == "Dashboard":
     st.write(", ".join(bdays) if bdays else "No birthdays in the next 30 days.")
 
 # --- Reports ---------------------------------------------------------------
-elif menu == "Reports":
+elif menu == "Service Reports":
     st.header("Service Reports")
     st.selectbox("View by", ["Each Meeting Day","Monthly","Global"])
     with st.form("add_report", clear_on_submit=True):
