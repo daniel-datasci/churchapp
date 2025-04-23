@@ -82,10 +82,15 @@ st.set_page_config(page_title="Church Management", layout="wide")
 church_name = "My Church"
 
 # --- Sidebar Navigation --------------------------------------------------------
-menu = st.sidebar.selectbox(
-    "Navigate",
-    ["Dashboard","Reports","Meeting Days","Branches","Members","Staff & Roles","Tools & Resources","Communications Hub","Support"]
-)
+st.sidebar.title("Menu")
+menu = st.sidebar.radio("", [
+    'Dashboard','Reports','Meeting Days','Branches','Members','Staff & Roles','Tools & Resources','Communications Hub','Support'
+])
+
+#menu = st.sidebar.selectbox(
+    #"Navigate",
+    #["Dashboard","Reports","Meeting Days","Branches","Members","Staff & Roles","Tools & Resources","Communications Hub","Support"]
+#)
 
 # --- Dashboard ---------------------------------------------------------------
 if menu == "Dashboard":
